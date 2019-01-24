@@ -19,7 +19,7 @@ This function allows the user to obtain multiple team's schedule.
 \examples{
 \dontrun{
 ncaa_get_season_schedule(2017)
-ncaa_get_season_schedule(2017,conf="ACC")
+ncaa_get_season_schedule(2017,conference="ACC")
 }
 
 

@@ -9,11 +9,12 @@
 #' @import dplyr
 #' @import assertthat
 #' @import purrr
+#' @import tidyr
 #' @export ncaa_get_season_schedule
 #' @examples
 #' \dontrun{
 #' ncaa_get_season_schedule(2017)
-#' ncaa_get_season_schedule(2017,conf="ACC")
+#' ncaa_get_season_schedule(2017,conference="ACC")
 #' }
 #' 
 #' 

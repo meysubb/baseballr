@@ -125,10 +125,16 @@ stripwhite <- function(x) gsub("\\s*$", "", gsub("^\\s*", "", x))
 
 # Get pbp from all games in one season
 .get_season_pbp=function(year, division=1,conference=NULL){
+  
   if(!is.null(conference)){
-    all_season_games=ncaa_get_season_schedule(year, div=divison,conf=conference)
+    all_season_games <- ncaa_get_season_schedule(year, div=division,conf=conference)
   }
-  all_season_games=ncaa_get_season_schedule(year, div=division)
+  if(is.null(conference)){
+    all_season_games <- ncaa_get_season_schedule(year, div=division)
+  }
+                             
+      
+      
   
   games=all_season_games %>%
     distinct(GameId, .keep_all = TRUE) %>%

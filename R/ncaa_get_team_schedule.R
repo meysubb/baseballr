@@ -9,6 +9,7 @@
 #' @import dplyr
 #' @import assertthat
 #' @import snakecase
+#' @importFrom dplyr "filter"
 #' @importFrom xml2 "read_html"
 #' @importFrom rvest "html_nodes"
 #' @importFrom rvest "html_text"
