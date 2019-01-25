@@ -9,9 +9,9 @@
 #' @keywords baseball, NCAA, college
 #' @import dplyr
 #' @import assertthat
-#' @import purrr
 #' @import XML
 #' @import RCurl
+#' @import furrr
 #' @importFrom tidyr "unnest"
 #' @export ncaa_get_pbp
 #' @examples
@@ -58,10 +58,16 @@ stripwhite <- function(x) gsub("\\s*$", "", gsub("^\\s*", "", x))
 }
 
 .clean_games = function(game_id,year){
-  base_url='http://stats.ncaa.org/game/play_by_play/'
+  print(paste0('Processing pbp for ',game_id))
+  base_url='http://stats.ncaa.org/game/play_by_play'
   x= paste(base_url, game_id, sep='/')
-  Sys.sleep(1)
-  y=readHTMLTable(getURL(x))
+  #Sys.sleep(1)
+  x_read <- try(getURL(x))
+  if (class(x_read)=='try-error'){
+    print(paste('Cannot connect to server for', game_id, 'in', year))
+    return(NA)
+  }
+  y=readHTMLTable(x_read)
   # Play by play is in table form
   y = y[which(!sapply(y,is.null))]
   
@@ -91,6 +97,9 @@ stripwhite <- function(x) gsub("\\s*$", "", gsub("^\\s*", "", x))
       }
     }
   }
+  if(!exists('pbp')){
+    return(NA)
+  }
   pbp = pbp %>% mutate(away_team = colnames(pbp)[4],
                        home_team = colnames(pbp)[6],
                        away_score = as.integer(gsub('-.*', '', Score)),
@@ -118,7 +127,7 @@ stripwhite <- function(x) gsub("\\s*$", "", gsub("^\\s*", "", x))
   ### use purrr map here to
   game_pbp = games %>% mutate(
     pbp_raw = purrr::map2(GameId,Year,.clean_games)
-  )  
+  )  %>% drop_na()
   pbp_final <- game_pbp %>% select(pbp_raw) %>% unnest()  
   return(pbp_final)
 }
@@ -133,8 +142,10 @@ stripwhite <- function(x) gsub("\\s*$", "", gsub("^\\s*", "", x))
     all_season_games <- ncaa_get_season_schedule(year, div=division)
   }
                              
-      
-      
+  
+  print('Processing Play-by-Play')    
+  plan(multiprocess)
+  
   
   games=all_season_games %>%
     distinct(GameId, .keep_all = TRUE) %>%
@@ -143,8 +154,8 @@ stripwhite <- function(x) gsub("\\s*$", "", gsub("^\\s*", "", x))
     select(Year, Date, GameId, home_team, away_team)
   
   season_pbp = games %>% mutate(
-    pbp_raw = purrr::map2(GameId,Year,.clean_games)
-  )
+    pbp_raw = furrr::future_map2(GameId,Year,.clean_games,.progress = TRUE)
+  ) %>% drop_na()
   pbp_final <- season_pbp %>% select(pbp_raw) %>% unnest()  
   return(pbp_final)
 }

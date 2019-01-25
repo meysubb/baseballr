@@ -50,7 +50,7 @@ else{
   game_ids <- .get_game_id(team_read %>% html_nodes(".smtext .skipMask") %>% html_attr("href"))
   
   if(verbose){
-    print(paste0("Processing data for: ",team))
+    print(paste0("Processing schedule data for: ",team))
   }
   
   x_df <- x_df %>% mutate(
