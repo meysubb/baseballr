@@ -27,7 +27,7 @@ ncaa_get_expected_runs_matrix <- function(pbp_data_frame){
     arrange(outs)
   
   ER2=matrix(ER$ERV, ncol=3)
-  rownames(ER2)=c('_ _ _','X _ _','_ X _ ','X X _','_ _ X','X _ X','_ X X','X X X')
+  rownames(ER2)=c('_ _ _','X _ _','_ X _','X X _','_ _ X','X _ X','_ X X','X X X')
   colnames(ER2)=c('0','1','2')
   
   
