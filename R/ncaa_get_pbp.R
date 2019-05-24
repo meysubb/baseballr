@@ -60,8 +60,12 @@ stripwhite <- function(x) gsub("\\s*$", "", gsub("^\\s*", "", x))
 
 .clean_games = function(game_id,year){
   print(paste0('Processing pbp for ',game_id))
-  base_url='http://stats.ncaa.org/game/play_by_play'
-  x= paste(base_url, game_id, sep='/')
+  first_url='https://stats.ncaa.org/contests/'
+  first_x = paste(first_url,game_id,'box_score',sep='/')
+  adv_game_id = read_html(first_x) %>% html_nodes("#root li:nth-child(3) a") %>% html_attr("href")
+  
+  base_url='http://stats.ncaa.org'
+  x= paste(base_url, adv_game_id, sep='/')
   #Sys.sleep(1)
   x_read <- try(getURL(x))
   if (class(x_read)=='try-error'){
@@ -148,10 +152,10 @@ stripwhite <- function(x) gsub("\\s*$", "", gsub("^\\s*", "", x))
   if(is.null(conference)){
     all_season_games <- ncaa_get_season_schedule(year, div=division)
   }
-                             
+  
   
   print('Processing Play-by-Play')    
-
+  
   
   games=all_season_games %>%
     distinct(GameId, .keep_all = TRUE) %>%
