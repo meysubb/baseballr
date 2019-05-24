@@ -48,7 +48,14 @@ ncaa_get_team_schedule <- function(teamid, year, division=1,verbose=F){
     x_df <- apply(x %>% matrix(ncol=3,byrow=T),2,.stripwhite) %>% data.frame(stringsAsFactors = F)
     colnames(x_df) <- team_read %>% html_nodes("th") %>% html_text()
     
+    x_df = x_df %>% filter(!Result=="")
+    
     game_ids <- .get_game_id(team_read %>% html_nodes("fieldset .skipMask") %>% html_attr("href"))
+    
+    if(length(game_ids) < nrow(x_df)){
+      len = nrow(x_df) - length(game_ids)
+      game_ids = c(game_ids,rep(NA,len))
+    }
     
     if(verbose){
       print(paste0("Processing schedule data for: ",team))
