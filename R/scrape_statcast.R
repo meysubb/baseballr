@@ -38,7 +38,7 @@ scrape_statcast_savant.Date <- function(start_date = Sys.Date() - 1, end_date = 
   if (start_date <= "2015-03-01") { # March 1, 2015 was the first date of Spring Training.
     message("Some metrics such as Exit Velocity and Batted Ball Events have only been compiled since 2015.")
   }
-  if (start_date <= "2008-03-25") { # March 25, 2008 was the first date of Spring Training.
+  if (start_date < "2008-03-25") { # March 25, 2008 was the first date of the 2008 season.
     stop("The data are limited to the 2008 MLB season and after.")
     return(NULL)
   }
@@ -109,7 +109,7 @@ scrape_statcast_savant.Date <- function(start_date = Sys.Date() - 1, end_date = 
   # Do a try/catch to show errors that the user may encounter while downloading.
   tryCatch(
     {
-      message("These data are from BaseballSevant and are property of MLB Advanced Media, L.P. All rights reserved.")
+      message("These data are from BaseballSavant and are property of MLB Advanced Media, L.P. All rights reserved.")
       message("Grabbing data, this may take a minute...")
       suppressMessages(
         suppressWarnings(
