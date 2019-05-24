@@ -159,7 +159,7 @@ stripwhite <- function(x) gsub("\\s*$", "", gsub("^\\s*", "", x))
   
   games=all_season_games %>%
     distinct(GameId, .keep_all = TRUE) %>%
-    mutate(home_team=ifelse(Loc%in%c('H', 'N'), Team, Opp),
+    mutate(home_team=ifelse(Loc %in% c('H', 'N'), Team, Opp),
            away_team=ifelse(Loc=='H', Opp, Team )) %>% 
     select(Year, Date, GameId, home_team, away_team)
   
